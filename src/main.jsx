@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BookOpen, Braces, Check, ChevronRight, Clipboard, Database, ExternalLink, FileJson, Layers3, Map, MapPinned, Menu, Search, ShieldCheck, Sparkles, X } from 'lucide-react';
 import './styles.css';
+import './accent-theme.css';
 
 const datasets = [
   { name: 'Building registry', file: 'building-registry.ts', type: 'Registry', status: 'Maintained', description: 'Canonical building codes, names, aliases, categories and room-to-floor interpretation rules.', fields: ['code', 'name', 'category', 'aliases', 'roomFloorRule'] },
@@ -10,123 +11,81 @@ const datasets = [
   { name: 'Entrances & access', file: 'generated/campus-access-audit.json', type: 'JSON', status: 'Audited', description: 'Coverage and verification information for exterior entrances and approach geometry.', fields: ['code', 'canonicalGeometry', 'verifiedExteriorEntrances', 'inferredApproaches'] },
 ];
 
-const steps = [
-  ['01', 'Source', 'Start from attributable public geometry, campus references, direct observation, or a clearly documented derivation.'],
-  ['02', 'Normalize', 'Convert names, codes, coordinates and properties into Gapwise’s stable canonical schema.'],
-  ['03', 'Verify', 'Cross-check geometry and semantics; flag uncertainty rather than silently inventing detail.'],
-  ['04', 'Review', 'Inspect the data in context and run consistency checks against neighboring campus entities.'],
-  ['05', 'Publish', 'Ship data with provenance and machine-readable structure so downstream projects can reuse it safely.'],
+const schemas = [
+  ['code', 'string', 'required'],
+  ['name', 'string', 'required'],
+  ['category', 'BuildingCategory', 'required'],
+  ['aliases', 'string[]', 'optional'],
+  ['roomFloorRule', 'function', 'optional'],
+  ['sourceIds', 'string[]', 'source'],
 ];
 
 const snippets = {
-  javascript: `const response = await fetch('/data/buildings.geojson');\nconst campus = await response.json();\n\nconst deerfield = campus.features.find(\n  feature => feature.properties.code === 'DH'\n);\n\nconsole.log(deerfield.properties.name);`,
-  python: `import json\n\nwith open('buildings.geojson') as f:\n    campus = json.load(f)\n\ndeerfield = next(\n    f for f in campus['features']\n    if f['properties']['code'] == 'DH'\n)\n\nprint(deerfield['properties']['name'])`,
-  curl: `curl -L https://raw.githubusercontent.com/andrewmuratov/gapwise/main/src/data/utm/buildings.geojson \\\n  -o buildings.geojson`,
+  js: `const response = await fetch(\n  'https://raw.githubusercontent.com/andrewmuratov/gapwise/main/src/data/utm/buildings.geojson'\n);\nconst campus = await response.json();\n\nconst deerfield = campus.features.find(\n  feature => feature.properties.code === 'DH'\n);`,
+  python: `import requests\n\nurl = "https://raw.githubusercontent.com/andrewmuratov/gapwise/main/src/data/utm/buildings.geojson"\ncampus = requests.get(url).json()\n\ndeerfield = next(\n    f for f in campus["features"]\n    if f["properties"]["code"] == "DH"\n)`,
+  curl: `curl -L \\\n  https://raw.githubusercontent.com/andrewmuratov/gapwise/main/src/data/utm/buildings.geojson`,
 };
 
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [lang, setLang] = useState('javascript');
+  const [codeTab, setCodeTab] = useState('js');
   const [copied, setCopied] = useState(false);
-  const [menu, setMenu] = useState(false);
-  const filtered = useMemo(() => datasets.filter(d => (d.name + d.file + d.description + d.type).toLowerCase().includes(query.toLowerCase())), [query]);
 
-  const copy = async () => {
-    await navigator.clipboard.writeText(snippets[lang]);
+  const filtered = useMemo(() => datasets.filter((dataset) => {
+    const haystack = `${dataset.name} ${dataset.file} ${dataset.type} ${dataset.description} ${dataset.fields.join(' ')}`.toLowerCase();
+    return haystack.includes(query.toLowerCase());
+  }), [query]);
+
+  async function copySnippet() {
+    await navigator.clipboard.writeText(snippets[codeTab]);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1200);
-  };
+    window.setTimeout(() => setCopied(false), 1200);
+  }
 
-  return <div className="app">
-    <header className="topbar">
-      <a className="brand" href="#top"><img src="/logo-mark.svg" alt="" /><span>Gapwise <b>Data</b></span></a>
-      <nav className={menu ? 'nav open' : 'nav'}>
-        <a href="#datasets" onClick={() => setMenu(false)}>Datasets</a>
-        <a href="#collection" onClick={() => setMenu(false)}>Collection</a>
-        <a href="#schemas" onClick={() => setMenu(false)}>Schemas</a>
-        <a href="#use" onClick={() => setMenu(false)}>Use the data</a>
-        <a href="https://github.com/andrewmuratov/gapwise-data" target="_blank">GitHub <ExternalLink size={14}/></a>
-      </nav>
-      <button className="menu" onClick={() => setMenu(!menu)} aria-label="Toggle navigation">{menu ? <X/> : <Menu/>}</button>
-    </header>
+  return (
+    <>
+      <header className="topbar">
+        <a className="brand" href="#top"><img src="/logo-mark.svg" alt=""/><span>Gapwise <b>Data</b></span></a>
+        <button className="menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X size={20}/> : <Menu size={20}/>}</button>
+        <nav className={`nav ${menuOpen ? 'open' : ''}`}>
+          <a href="#datasets">Datasets</a><a href="#collection">Collection</a><a href="#schemas">Schemas</a><a href="#reuse">Use the data</a>
+          <a href="https://github.com/andrewmuratov/gapwise" target="_blank">GitHub <ExternalLink size={13}/></a>
+        </nav>
+      </header>
 
-    <main id="top">
-      <section className="hero shell">
-        <div className="eyebrow"><Sparkles size={14}/> Open campus data, explained</div>
-        <h1>The map behind <span>Gapwise.</span></h1>
-        <p className="lead">A transparent, developer-friendly home for the data that powers Gapwise’s campus map: how it is collected, structured, checked, attributed, and reused.</p>
-        <div className="hero-actions">
-          <a className="primary" href="#datasets">Explore the data <ChevronRight size={17}/></a>
-          <a className="secondary" href="https://github.com/andrewmuratov/gapwise" target="_blank"><Braces size={17}/> View source</a>
-        </div>
-        <div className="stats">
-          <div><strong>GeoJSON</strong><span>spatial data</span></div>
-          <div><strong>Auditable</strong><span>provenance-first</span></div>
-          <div><strong>Reusable</strong><span>project-friendly</span></div>
-          <div><strong>UTM</strong><span>current coverage</span></div>
-        </div>
-      </section>
+      <main id="top">
+        <section className="hero shell">
+          <div className="eyebrow"><Sparkles size={13}/> Open campus data, explained</div>
+          <h1>The map behind <span>Gapwise.</span></h1>
+          <p className="lead">A transparent, developer-friendly home for the data that powers Gapwise’s campus map: how it is collected, structured, checked, attributed, and reused.</p>
+          <div className="hero-actions"><a className="primary" href="#datasets">Explore the data <ChevronRight size={16}/></a><a className="secondary" href="https://github.com/andrewmuratov/gapwise/tree/main/src/data/utm"><Braces size={15}/> View source</a></div>
+          <div className="stats"><div><strong>GeoJSON</strong><span>Spatial data</span></div><div><strong>Auditable</strong><span>Provenance-first</span></div><div><strong>Reusable</strong><span>Project-friendly</span></div><div><strong>UTM</strong><span>Current coverage</span></div></div>
+        </section>
 
-      <section className="shell intro-grid">
-        <article className="feature-card"><MapPinned/><h3>Geometry with context</h3><p>Not just coordinates. Building identity, geometry role, source IDs and campus semantics live alongside the shapes.</p></article>
-        <article className="feature-card"><ShieldCheck/><h3>Provenance over guesswork</h3><p>Every useful map eventually faces uncertainty. Gapwise records where data came from and distinguishes verification from inference.</p></article>
-        <article className="feature-card"><Braces/><h3>Built to be reused</h3><p>Stable codes and conventional formats make the data straightforward to consume in websites, scripts, visualizations and experiments.</p></article>
-      </section>
+        <section className="shell intro-grid">
+          <article className="feature-card"><MapPinned size={22}/><h3>Geometry with context</h3><p>Not just coordinates. Building identity, geometry role, source IDs and campus semantics live alongside the map.</p></article>
+          <article className="feature-card"><ShieldCheck size={22}/><h3>Provenance over guesswork</h3><p>Every useful map eventually faces uncertainty. Gapwise records where data came from and what is inferred.</p></article>
+          <article className="feature-card"><Braces size={22}/><h3>Built to be reused</h3><p>Stable codes and conventional formats make the data straightforward to consume in websites, scripts, research, or prototypes.</p></article>
+        </section>
 
-      <section id="datasets" className="section shell">
-        <div className="section-heading"><div><span className="kicker">DATA CATALOG</span><h2>Know what exists.</h2><p>Browse the major data surfaces and the role each one plays in the map stack.</p></div><div className="search"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search datasets…" /></div></div>
-        <div className="dataset-grid">
-          {filtered.map((d) => <article className="dataset" key={d.file}>
-            <div className="dataset-top"><span className="file-icon">{d.type === 'GeoJSON' ? <Map size={18}/> : d.type === 'JSON' ? <FileJson size={18}/> : <Database size={18}/>}</span><span className="badge">{d.status}</span></div>
-            <h3>{d.name}</h3><code>{d.file}</code><p>{d.description}</p>
-            <div className="fields">{d.fields.map(f=><span key={f}>{f}</span>)}</div>
-          </article>)}
-        </div>
-      </section>
+        <section id="datasets" className="section shell">
+          <div className="section-heading"><div><div className="kicker"><Database size={14}/> Dataset catalog</div><h2>Know what exists.</h2><p>Browse the major data surfaces behind Gapwise.</p></div><label className="search"><Search size={15}/><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search datasets"/></label></div>
+          <div className="dataset-grid">{filtered.map((dataset) => <article className="dataset" key={dataset.file}><div className="dataset-top"><span className="file-icon"><FileJson size={18}/></span><span className="badge">{dataset.status}</span></div><h3>{dataset.name}</h3><code>{dataset.file}</code><p>{dataset.description}</p><div className="fields">{dataset.fields.map((field) => <span key={field}>{field}</span>)}</div></article>)}</div>
+        </section>
 
-      <section id="collection" className="section process-wrap">
-        <div className="shell"><span className="kicker">COLLECTION PIPELINE</span><h2>From source to trustworthy map.</h2><p className="section-copy">The collection process is designed to keep observations, transformations and uncertainty visible instead of collapsing them into an unexplained final file.</p>
-          <div className="process">{steps.map(([n,t,p])=><div className="step" key={n}><span>{n}</span><div><h3>{t}</h3><p>{p}</p></div></div>)}</div>
-        </div>
-      </section>
+        <div id="collection" className="process-wrap"><section className="section shell"><div className="kicker"><Layers3 size={14}/> Collection pipeline</div><h2>From source to campus model.</h2><p className="section-copy">The useful part of open data is not merely publishing a file. It is explaining what happened before the file reached you.</p><div className="process">{[['01','Collect','Start with official, source-linked, or directly observed campus information.'],['02','Normalize','Convert inconsistent names, identifiers, coordinates, and metadata into stable project conventions.'],['03','Verify','Cross-check geometry and semantics against independent signals where practical.'],['04','Derive','Generate routing-friendly or application-specific data without presenting inference as observation.'],['05','Publish','Keep machine-readable data inspectable alongside human documentation.']].map(([n,title,copy]) => <article className="step" key={n}><span>{n}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></section></div>
 
-      <section id="schemas" className="section shell schema-grid">
-        <div><span className="kicker">SCHEMA EXPLORER</span><h2>Predictable shapes for unpredictable places.</h2><p className="section-copy">Campus spaces are messy; consuming them should not be. Gapwise normalizes common entities into documented properties with explicit geometry roles.</p>
-          <div className="legend"><span><i className="dot required"/> canonical</span><span><i className="dot optional"/> contextual</span><span><i className="dot source"/> provenance</span></div>
-        </div>
-        <div className="schema-card">
-          <div className="schema-title"><Layers3 size={18}/><code>BuildingFeature</code></div>
-          <div className="schema-row"><b>type</b><code>"Feature"</code><em>canonical</em></div>
-          <div className="schema-row"><b>geometry</b><code>Point | Polygon</code><em>canonical</em></div>
-          <div className="schema-row"><b>properties.code</b><code>string</code><em>canonical</em></div>
-          <div className="schema-row"><b>properties.name</b><code>string</code><em>canonical</em></div>
-          <div className="schema-row"><b>properties.geometryRole</b><code>string</code><em>context</em></div>
-          <div className="schema-row"><b>properties.source</b><code>string</code><em>provenance</em></div>
-          <div className="schema-row"><b>properties.sourceIds</b><code>string[]</code><em>provenance</em></div>
-        </div>
-      </section>
+        <section id="schemas" className="section shell"><div className="schema-grid"><div><div className="kicker"><BookOpen size={14}/> Schema explorer</div><h2>Readable by people and machines.</h2><p className="section-copy">Stable fields make downstream projects less brittle. Schema documentation distinguishes required values, optional enrichments, and source metadata.</p><div className="legend"><span><i className="dot required"/>required</span><span><i className="dot optional"/>optional</span><span><i className="dot source"/>source</span></div></div><div className="schema-card"><div className="schema-title"><Braces size={16}/><code>BuildingRecord</code></div>{schemas.map(([field,type,kind]) => <div className="schema-row" key={field}><b>{field}</b><code>{type}</code><em>{kind}</em></div>)}</div></div></section>
 
-      <section id="use" className="section shell">
-        <span className="kicker">QUICKSTART</span><h2>Put it in your project.</h2><p className="section-copy">The underlying Gapwise repository can be consumed directly today. These examples show the basic pattern; the data site can later expose versioned downloads and a dedicated API.</p>
-        <div className="codebox">
-          <div className="codebar"><div>{Object.keys(snippets).map(k=><button className={lang===k?'active':''} onClick={()=>setLang(k)} key={k}>{k}</button>)}</div><button className="copy" onClick={copy}>{copied?<Check size={16}/>:<Clipboard size={16}/>} {copied?'Copied':'Copy'}</button></div>
-          <pre><code>{snippets[lang]}</code></pre>
-        </div>
-      </section>
+        <section id="reuse" className="section shell"><div className="kicker"><Map size={14}/> Use the data</div><h2>Start with the source.</h2><p className="section-copy">Consume the canonical files directly today. The portal is designed to grow toward versioned exports and richer machine-readable access without hiding the underlying repository.</p><div className="codebox"><div className="codebar"><div>{['js','python','curl'].map(tab => <button key={tab} className={codeTab===tab?'active':''} onClick={() => setCodeTab(tab)}>{tab === 'js' ? 'JavaScript' : tab === 'python' ? 'Python' : 'curl'}</button>)}</div><button className="copy" onClick={copySnippet}>{copied ? <Check size={14}/> : <Clipboard size={14}/>} {copied ? 'Copied' : 'Copy'}</button></div><pre><code>{snippets[codeTab]}</code></pre></div></section>
 
-      <section className="section shell principles">
-        <div><BookOpen/><span className="kicker">DESIGN PRINCIPLES</span><h2>What “open data” means here.</h2></div>
-        <div className="principle-list">
-          <article><span>01</span><div><h3>Explain the transformation</h3><p>Reusable data needs a story: original source, normalization, derived fields and review status.</p></div></article>
-          <article><span>02</span><div><h3>Separate fact from inference</h3><p>When something is inferred for navigation or presentation, it should be represented as such.</p></div></article>
-          <article><span>03</span><div><h3>Prefer stable identifiers</h3><p>Human-readable labels can change. Stable building codes and source IDs give downstream projects a durable join key.</p></div></article>
-          <article><span>04</span><div><h3>Make inspection easy</h3><p>A good dataset should be explorable by people as well as parsable by software. This site is the human layer.</p></div></article>
-        </div>
-      </section>
-    </main>
+        <section className="section shell principles"><div><ShieldCheck size={28}/><div className="kicker">Data principles</div><h2>Trust is part of the dataset.</h2></div><div className="principle-list">{[['01','Explain transformations','Document how source material becomes application data.'],['02','Separate fact from inference','Derived navigation geometry should never masquerade as direct observation.'],['03','Prefer stable identifiers','Names change. Durable codes and source IDs make integrations more resilient.'],['04','Preserve provenance','A useful record should carry enough context to understand where it came from.']].map(([n,title,copy]) => <article key={n}><span>{n}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></section>
+      </main>
 
-    <footer><div className="shell footer-inner"><div className="brand"><img src="/logo-mark.svg" alt=""/><span>Gapwise <b>Data</b></span></div><p>Independent campus data tooling for Gapwise. Not an official University of Toronto service.</p><a href="https://github.com/andrewmuratov/gapwise-data" target="_blank">GitHub <ExternalLink size={14}/></a></div></footer>
-  </div>
+      <footer><div className="shell footer-inner"><a className="brand" href="#top"><img src="/logo-mark.svg" alt=""/><span>Gapwise Data</span></a><p>Independent project · Not an official University of Toronto service.</p><a href="https://gapwise.ca">Gapwise <ExternalLink size={12}/></a><a href="https://github.com/andrewmuratov/gapwise-data">Repository <ExternalLink size={12}/></a></div></footer>
+    </>
+  );
 }
 
-createRoot(document.getElementById('root')).render(<App />);
+createRoot(document.getElementById('root')).render(<App/>);
