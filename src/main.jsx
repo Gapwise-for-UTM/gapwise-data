@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BookOpen, Braces, Check, ChevronRight, Clipboard, Database, ExternalLink, FileJson, Github, Layers3, Map, MapPinned, Menu, Search, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { BookOpen, Braces, Check, ChevronRight, Clipboard, Database, ExternalLink, FileJson, Layers3, Map, MapPinned, Menu, Search, ShieldCheck, Sparkles, X } from 'lucide-react';
 import './styles.css';
 
 const datasets = [
@@ -57,7 +57,7 @@ function App() {
         <p className="lead">A transparent, developer-friendly home for the data that powers Gapwise’s campus map: how it is collected, structured, checked, attributed, and reused.</p>
         <div className="hero-actions">
           <a className="primary" href="#datasets">Explore the data <ChevronRight size={17}/></a>
-          <a className="secondary" href="https://github.com/andrewmuratov/gapwise" target="_blank"><Github size={17}/> View source</a>
+          <a className="secondary" href="https://github.com/andrewmuratov/gapwise" target="_blank"><Braces size={17}/> View source</a>
         </div>
         <div className="stats">
           <div><strong>GeoJSON</strong><span>spatial data</span></div>
@@ -76,7 +76,7 @@ function App() {
       <section id="datasets" className="section shell">
         <div className="section-heading"><div><span className="kicker">DATA CATALOG</span><h2>Know what exists.</h2><p>Browse the major data surfaces and the role each one plays in the map stack.</p></div><div className="search"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search datasets…" /></div></div>
         <div className="dataset-grid">
-          {filtered.map((d, i) => <article className="dataset" key={d.file}>
+          {filtered.map((d) => <article className="dataset" key={d.file}>
             <div className="dataset-top"><span className="file-icon">{d.type === 'GeoJSON' ? <Map size={18}/> : d.type === 'JSON' ? <FileJson size={18}/> : <Database size={18}/>}</span><span className="badge">{d.status}</span></div>
             <h3>{d.name}</h3><code>{d.file}</code><p>{d.description}</p>
             <div className="fields">{d.fields.map(f=><span key={f}>{f}</span>)}</div>
