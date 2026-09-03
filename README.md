@@ -18,7 +18,7 @@
 
 `gapwise-data` is the public data documentation and exploration layer of **Gapwise**, a multi-surface campus-intelligence ecosystem created and engineered by **Andrew Muratov**.
 
-Gapwise is not only a timetable website. Its first-party ecosystem spans a student web/PWA experience, native mobile client, deterministic public campus API and SDKs, permissioned AI/MCP integration, an open data/provenance portal, developer documentation, and an independent operational status surface.
+Gapwise is not only a timetable website. Its first-party ecosystem spans a student web/PWA experience, native mobile client, deterministic public campus API and published SDKs, permissioned AI/MCP integration, an open data/provenance portal, developer documentation, and an independent operational status surface.
 
 Andrew's work on the ecosystem spans **full-stack software engineering, cybersecurity and privacy engineering, platform architecture, API and SDK design, data engineering, developer infrastructure, mobile engineering, and permissioned AI integration**.
 
@@ -39,7 +39,7 @@ The canonical application data currently lives in the main [`andrewmuratov/gapwi
 - copyable JavaScript, Python, and curl examples;
 - versioned public data and machine-readable access through the Gapwise platform.
 
-The current public Gapwise campus snapshot contains **30 canonical UTM buildings/facilities** and is consumed by the same deterministic platform semantics used by Gapwise web, mobile, API, and AI-facing surfaces.
+The current public Gapwise campus snapshot contains **30 canonical UTM buildings/facilities** and is consumed by the same deterministic platform semantics used by Gapwise web, mobile, API, SDK, and AI-facing surfaces.
 
 ## Data principles
 
@@ -49,7 +49,7 @@ The current public Gapwise campus snapshot contains **30 canonical UTM buildings
 4. **Preserve uncertainty.** Unknown or unverified facts stay visible as unknown or unverified.
 5. **Make inspection easy.** Data should be understandable by both people and machines.
 6. **Preserve provenance.** Source information belongs with the dataset, not in somebody's memory.
-7. **Reuse one source of truth.** Product, mobile, API, docs, and AI should consume canonical Gapwise facts instead of recreating them independently.
+7. **Reuse one source of truth.** Product, mobile, API, SDKs, docs, and AI should consume canonical Gapwise facts instead of recreating them independently.
 
 ---
 
@@ -59,7 +59,7 @@ The six first-party repositories are separate execution and publication surfaces
 
 | Repository | Role | Primary surface |
 | --- | --- | --- |
-| **[`gapwise`](https://github.com/andrewmuratov/gapwise)** | Core web/PWA product, canonical student-state behavior, deterministic campus intelligence, public API, OpenAPI contract, and SDK source | [gapwise.ca](https://gapwise.ca) / [api.gapwise.ca](https://api.gapwise.ca/v1) |
+| **[`gapwise`](https://github.com/andrewmuratov/gapwise)** | Core web/PWA product, canonical student-state behavior, deterministic campus intelligence, public API, OpenAPI contract, and published SDK source | [gapwise.ca](https://gapwise.ca) / [api.gapwise.ca](https://api.gapwise.ca/v1) |
 | **[`gapwise-mobile`](https://github.com/andrewmuratov/gapwise-mobile)** | Native iOS and Android client consuming canonical Gapwise product and platform semantics | Native mobile app |
 | **[`gapwise-ai`](https://github.com/andrewmuratov/gapwise-ai)** | OAuth-protected MCP layer for explicitly delegated student context and bounded AI actions | [ai.gapwise.ca](https://ai.gapwise.ca) |
 | **[`gapwise-data`](https://github.com/andrewmuratov/gapwise-data)** | Open campus-data, schema, provenance, validation, and reuse portal | [data.gapwise.ca](https://data.gapwise.ca) |
@@ -79,8 +79,16 @@ Use the developer platform when you want machine-readable campus intelligence ra
 - **API:** https://api.gapwise.ca/v1
 - **OpenAPI 3.1:** https://api.gapwise.ca/openapi.json
 - **Versioned UTM snapshot:** https://gapwise.ca/data/utm-campus-v1.json
-- **JavaScript/TypeScript SDK:** `@gapwise/sdk`
-- **Python SDK source:** https://github.com/andrewmuratov/gapwise/tree/main/sdk/python
+- **JavaScript/TypeScript SDK:** `@gapwise/sdk@0.1.0` on npm
+- **Python SDK:** `gapwise==0.1.0` on PyPI
+- **SDK source:** https://github.com/andrewmuratov/gapwise/tree/main/sdk
+
+```bash
+npm install @gapwise/sdk@0.1.0
+python -m pip install gapwise==0.1.0
+```
+
+The Python package was independently clean-installed and exercised against the production API. Registry releases use trusted publishing/OIDC rather than long-lived release credentials.
 
 Gapwise source code is MIT licensed, but upstream datasets retain their own terms. OpenStreetMap-derived records require the appropriate OpenStreetMap attribution and ODbL compliance; the MIT license does not override upstream data obligations.
 
