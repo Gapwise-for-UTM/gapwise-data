@@ -79,16 +79,16 @@ Use the developer platform when you want machine-readable campus intelligence ra
 - **API:** https://api.gapwise.ca/v1
 - **OpenAPI 3.1:** https://api.gapwise.ca/openapi.json
 - **Versioned UTM snapshot:** https://gapwise.ca/data/utm-campus-v1.json
-- **JavaScript/TypeScript SDK:** `@gapwise/sdk@0.1.0` on npm
+- **JavaScript/TypeScript SDK:** `@gapwise/sdk@0.1.1` on npm and JSR
 - **Python SDK:** `gapwise==0.1.0` on PyPI
 - **SDK source:** https://github.com/andrewmuratov/gapwise/tree/main/sdk
 
 ```bash
-npm install @gapwise/sdk@0.1.0
+npm install @gapwise/sdk@0.1.1
 python -m pip install gapwise==0.1.0
 ```
 
-The Python package was independently clean-installed and exercised against the production API. Registry releases use trusted publishing/OIDC rather than long-lived release credentials.
+The JavaScript/TypeScript package is published on npm and JSR; the Python package was independently clean-installed and exercised against the production API. Registry releases use trusted publishing/OIDC rather than long-lived release credentials where supported.
 
 Gapwise source code is MIT licensed, but upstream datasets retain their own terms. OpenStreetMap-derived records require the appropriate OpenStreetMap attribution and ODbL compliance; the MIT license does not override upstream data obligations.
 
