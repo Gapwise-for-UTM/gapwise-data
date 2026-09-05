@@ -21,9 +21,9 @@ const schemas = [
 ];
 
 const snippets = {
-  js: `const response = await fetch(\n  'https://raw.githubusercontent.com/andrewmuratov/gapwise/main/src/data/utm/buildings.geojson'\n);\nconst campus = await response.json();\n\nconst deerfield = campus.features.find(\n  feature => feature.properties.code === 'DH'\n);`,
-  python: `import requests\n\nurl = "https://raw.githubusercontent.com/andrewmuratov/gapwise/main/src/data/utm/buildings.geojson"\ncampus = requests.get(url).json()\n\ndeerfield = next(\n    f for f in campus["features"]\n    if f["properties"]["code"] == "DH"\n)`,
-  curl: `curl -L \\\n  https://raw.githubusercontent.com/andrewmuratov/gapwise/main/src/data/utm/buildings.geojson`,
+  js: `const response = await fetch(\n  'https://raw.githubusercontent.com/andrewmuratov/gapwise-data/main/data/utm/buildings.geojson'\n);\nconst campus = await response.json();\n\nconst deerfield = campus.features.find(\n  feature => feature.properties.code === 'DH'\n);`,
+  python: `import requests\n\nurl = "https://raw.githubusercontent.com/andrewmuratov/gapwise-data/main/data/utm/buildings.geojson"\ncampus = requests.get(url).json()\n\ndeerfield = next(\n    f for f in campus["features"]\n    if f["properties"]["code"] == "DH"\n)`,
+  curl: `curl -L \\\n  https://raw.githubusercontent.com/andrewmuratov/gapwise-data/main/data/utm/buildings.geojson`,
 };
 
 function App() {
@@ -50,7 +50,7 @@ function App() {
         <button className="menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X size={20}/> : <Menu size={20}/>}</button>
         <nav className={`nav ${menuOpen ? 'open' : ''}`}>
           <a href="#datasets">Datasets</a><a href="#collection">Collection</a><a href="#schemas">Schemas</a><a href="#reuse">Use the data</a>
-          <a href="https://github.com/andrewmuratov/gapwise" target="_blank">GitHub <ExternalLink size={13}/></a>
+          <a href="https://github.com/andrewmuratov/gapwise-data" target="_blank">GitHub <ExternalLink size={13}/></a>
         </nav>
       </header>
 
@@ -58,8 +58,8 @@ function App() {
         <section className="hero shell">
           <div className="eyebrow"><Sparkles size={13}/> Open campus data, explained</div>
           <h1>The map behind <span>Gapwise.</span></h1>
-          <p className="lead">A transparent, developer-friendly home for the data that powers Gapwise’s campus map: how it is collected, structured, checked, attributed, and reused.</p>
-          <div className="hero-actions"><a className="primary" href="#datasets">Explore the data <ChevronRight size={16}/></a><a className="secondary" href="https://github.com/andrewmuratov/gapwise/tree/main/src/data/utm"><Braces size={15}/> View source</a></div>
+          <p className="lead">A transparent, developer-friendly home for the canonical data that powers Gapwise’s campus map: how it is collected, structured, checked, attributed, and reused.</p>
+          <div className="hero-actions"><a className="primary" href="#datasets">Explore the data <ChevronRight size={16}/></a><a className="secondary" href="https://github.com/andrewmuratov/gapwise-data/tree/main/data/utm"><Braces size={15}/> View source</a></div>
           <div className="stats"><div><strong>GeoJSON</strong><span>Spatial data</span></div><div><strong>Auditable</strong><span>Provenance-first</span></div><div><strong>Reusable</strong><span>Project-friendly</span></div><div><strong>UTM</strong><span>Current coverage</span></div></div>
         </section>
 
@@ -78,7 +78,7 @@ function App() {
 
         <section id="schemas" className="section shell"><div className="schema-grid"><div><div className="kicker"><BookOpen size={14}/> Schema explorer</div><h2>Readable by people and machines.</h2><p className="section-copy">Stable fields make downstream projects less brittle. Schema documentation distinguishes required values, optional enrichments, and source metadata.</p><div className="legend"><span><i className="dot required"/>required</span><span><i className="dot optional"/>optional</span><span><i className="dot source"/>source</span></div></div><div className="schema-card"><div className="schema-title"><Braces size={16}/><code>BuildingRecord</code></div>{schemas.map(([field,type,kind]) => <div className="schema-row" key={field}><b>{field}</b><code>{type}</code><em>{kind}</em></div>)}</div></div></section>
 
-        <section id="reuse" className="section shell"><div className="kicker"><Map size={14}/> Use the data</div><h2>Start with the source.</h2><p className="section-copy">Consume the canonical files directly today. The portal is designed to grow toward versioned exports and richer machine-readable access without hiding the underlying repository.</p><div className="codebox"><div className="codebar"><div>{['js','python','curl'].map(tab => <button key={tab} className={codeTab===tab?'active':''} onClick={() => setCodeTab(tab)}>{tab === 'js' ? 'JavaScript' : tab === 'python' ? 'Python' : 'curl'}</button>)}</div><button className="copy" onClick={copySnippet}>{copied ? <Check size={14}/> : <Clipboard size={14}/>} {copied ? 'Copied' : 'Copy'}</button></div><pre><code>{snippets[codeTab]}</code></pre></div></section>
+        <section id="reuse" className="section shell"><div className="kicker"><Map size={14}/> Use the data</div><h2>Start with the canonical source.</h2><p className="section-copy">Consume the canonical repository files directly when you need raw source-level data. Applications that need stable campus-intelligence behavior should prefer the Gapwise public API or SDKs.</p><div className="codebox"><div className="codebar"><div>{['js','python','curl'].map(tab => <button key={tab} className={codeTab===tab?'active':''} onClick={() => setCodeTab(tab)}>{tab === 'js' ? 'JavaScript' : tab === 'python' ? 'Python' : 'curl'}</button>)}</div><button className="copy" onClick={copySnippet}>{copied ? <Check size={14}/> : <Clipboard size={14}/>} {copied ? 'Copied' : 'Copy'}</button></div><pre><code>{snippets[codeTab]}</code></pre></div></section>
 
         <section className="section shell principles"><div><ShieldCheck size={28}/><div className="kicker">Data principles</div><h2>Trust is part of the dataset.</h2></div><div className="principle-list">{[['01','Explain transformations','Document how source material becomes application data.'],['02','Separate fact from inference','Derived navigation geometry should never masquerade as direct observation.'],['03','Prefer stable identifiers','Names change. Durable codes and source IDs make integrations more resilient.'],['04','Preserve provenance','A useful record should carry enough context to understand where it came from.']].map(([n,title,copy]) => <article key={n}><span>{n}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></section>
       </main>
