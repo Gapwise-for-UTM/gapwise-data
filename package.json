@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run data:validate && vite build",
+    "data:validate": "node scripts/validate-campus-data.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
