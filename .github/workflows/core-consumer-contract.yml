@@ -1,0 +1,65 @@
+name: Core consumer contract
+
+on:
+  pull_request:
+    paths:
+      - data/utm/**
+      - .github/workflows/core-consumer-contract.yml
+  push:
+    branches:
+      - main
+      - refactor/canonical-campus-data
+    paths:
+      - data/utm/**
+      - .github/workflows/core-consumer-contract.yml
+
+permissions:
+  contents: read
+
+jobs:
+  core-compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out candidate canonical data
+        uses: actions/checkout@v4
+        with:
+          path: gapwise-data
+
+      - name: Check out current Gapwise core
+        uses: actions/checkout@v4
+        with:
+          repository: andrewmuratov/gapwise
+          ref: main
+          path: gapwise
+
+      - name: Replace core campus mirror with candidate data
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf gapwise/src/data/utm
+          mkdir -p gapwise/src/data/utm
+          cp -a gapwise-data/data/utm/. gapwise/src/data/utm/
+          rm -f gapwise/src/data/utm/SHA256SUMS
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Install core dependencies
+        working-directory: gapwise
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck core against candidate data
+        working-directory: gapwise
+        run: bun run typecheck
+
+      - name: Run focused campus routing tests
+        working-directory: gapwise
+        run: >-
+          bun test
+          tests/transition-routing.test.ts
+          tests/campus-day-route.test.ts
+          tests/residence-routing.test.ts
+          tests/gap-destination-feasibility.test.ts
+          tests/location-presentation.test.ts
