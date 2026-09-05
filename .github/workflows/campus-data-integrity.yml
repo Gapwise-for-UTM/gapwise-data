@@ -1,0 +1,29 @@
+name: Campus data integrity
+
+on:
+  pull_request:
+    paths:
+      - data/**
+      - public/data/**
+      - scripts/validate-campus-data.mjs
+      - .github/workflows/campus-data-integrity.yml
+  push:
+    branches:
+      - main
+      - refactor/canonical-campus-data
+    paths:
+      - data/**
+      - public/data/**
+      - scripts/validate-campus-data.mjs
+      - .github/workflows/campus-data-integrity.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate canonical campus dataset
+        run: node scripts/validate-campus-data.mjs

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "canonicalRepository": "andrewmuratov/gapwise-data",
+  "canonicalPath": "data/utm",
+  "bootstrappedFrom": {
+    "repository": "andrewmuratov/gapwise",
+    "ref": "main",
+    "commit": "ab32013f3b5840b652f189b1094baec149da9f60",
+    "path": "src/data/utm"
+  },
+  "consumerContract": {
+    "runtimeFetchRequired": false,
+    "coreMirrorPath": "src/data/utm",
+    "syncMode": "vendored-build-time-snapshot"
+  }
+}

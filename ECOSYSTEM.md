@@ -1,16 +1,16 @@
 # Gapwise ecosystem integration
 
-`gapwise-data` is the provenance and reuse surface of the six-repository Gapwise ecosystem. It explains public campus facts, schemas, evidence, transformations, attribution, and uncertainty; it does not redefine the product/API contract.
+`gapwise-data` is the **canonical public UTM campus-data, provenance, and reuse surface** of the six-repository Gapwise ecosystem. It owns public campus facts and geometry; it does not redefine deterministic product calculations or public API behavior.
 
 ## Connected surfaces
 
 | Surface | Canonical location | Relationship to Gapwise Data |
 | --- | --- | --- |
-| Student web/PWA + public API + SDK source | `andrewmuratov/gapwise` | owns deterministic campus/product semantics and the public API contract consumed here |
-| Native mobile | `andrewmuratov/gapwise-mobile` | consumes the same campus identities/semantics on iOS and Android |
-| AI/MCP | `andrewmuratov/gapwise-ai` | consumes minimized canonical Gapwise context behind OAuth; it is not a data-authority replacement |
-| Developer docs | `andrewmuratov/gapwise-docs` | documents released API/SDK/data contracts and links back to provenance here |
-| Status | `andrewmuratov/gapwise-status` | monitors public service health independently |
+| Student web/PWA + public API + SDK source | `andrewmuratov/gapwise` | vendors a validated campus-data snapshot and owns deterministic routing/gap-planning behavior plus public API/SDK contracts |
+| Native mobile | `andrewmuratov/gapwise-mobile` | consumes Gapwise API/product contracts; it must not maintain a parallel UTM dataset |
+| AI/MCP | `andrewmuratov/gapwise-ai` | exposes deterministic Gapwise campus semantics through MCP and delegated context; it is not a data-authority replacement |
+| Developer docs | `andrewmuratov/gapwise-docs` | documents released API/SDK contracts and links raw data/provenance back here |
+| Status | `andrewmuratov/gapwise-status` | monitors public service health independently and does not depend on raw campus data for routing semantics |
 
 ## Developer-platform state
 
@@ -26,25 +26,27 @@
 - AI/MCP: `https://ai.gapwise.ca/api/mcp`
 - Status: `https://status.gapwise.ca`
 
-TypeScript and Python are equal first-party SDK implementations. Examples in this repository should cover both when SDK examples are relevant; curl remains the language-neutral wire-contract example.
+TypeScript and Python are equal first-party SDK implementations. Applications should normally consume the stable API/SDK contract rather than importing raw repository data unless they specifically need source-level provenance or geometry.
 
 ## Data-specific source-of-truth rules
 
-1. Canonical campus records originate in the main `gapwise` repository; this repository makes their evidence and transformations inspectable.
-2. Public API and SDK behavior follows OpenAPI and the core implementation; this portal must not invent fields, enum values, rate limits, or availability semantics.
-3. Unknown/inferred/approximate/unverified states remain explicit in examples and schema explanations.
-4. Upstream attribution and ODbL obligations remain attached to data even when the consuming Gapwise code is MIT licensed.
-5. A schema/data-version change should trigger review of the core API, both SDKs, developer docs, mobile consumers, AI grounding, and any status probes that depend on the changed surface.
+1. Canonical public campus records originate in `gapwise-data/data/utm`.
+2. `gapwise/src/data/utm` is a checked-in compatibility mirror, validated byte-for-byte in CI; it is not a second authority.
+3. Public API and SDK behavior follows OpenAPI and the core implementation; this repository owns facts/evidence, not API semantics.
+4. Unknown/inferred/approximate/unverified states remain explicit in data and downstream representations.
+5. Upstream attribution and ODbL obligations remain attached to data even when consuming Gapwise code is MIT licensed.
+6. Production routing must not depend on `data.gapwise.ca` or GitHub being reachable at request time.
+7. A schema/data-version change should trigger review of core API/SDK output, developer docs, mobile consumers, AI grounding, and relevant status probes.
 
 ## Change impact
 
-When Gapwise Data changes, check whether the change affects:
+When canonical campus data changes, check whether the change affects:
 
-- `gapwise` canonical data imports/types/API output;
+- the `gapwise` vendored mirror and deterministic route/gap outputs;
 - TypeScript and Python public models/examples;
 - `gapwise-docs` data/provenance/API pages;
-- `gapwise-mobile` bundled/cached campus behavior;
-- `gapwise-ai` grounded campus context;
+- `gapwise-mobile` behavior exposed through stable contracts;
+- `gapwise-ai` grounded public campus tools;
 - `gapwise-status` monitored data/API endpoints.
 
-The ecosystem is intentionally interconnected, but ownership stays clear: Data explains evidence; Core owns deterministic semantics; Docs explains releases; Mobile consumes; AI receives delegated context; Status communicates health.
+The ecosystem is intentionally interconnected, but ownership stays explicit: **Data owns public UTM facts; Core owns deterministic calculations/contracts; Docs explains releases; Mobile consumes; AI exposes bounded context; Status communicates health.**
