@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /datasets/
+Disallow: /.well-known/
 
 Sitemap: https://data.gapwise.ca/sitemap.xml
