@@ -8,7 +8,7 @@
 
 **A transparent, developer-friendly home for the UTM campus data that powers Gapwise: buildings, geometry, routing evidence, provenance, validation, attribution, and reuse.**
 
-[Website](https://data.gapwise.ca) · [Data docs](https://docs.gapwise.ca/data/) · [Gapwise](https://gapwise.ca) · [API](https://api.gapwise.ca/v1) · [Status](https://status.gapwise.ca) · [Source data](data/utm)
+[Website](https://data.gapwise.ca) · [Data docs](https://docs.gapwise.ca/data/) · [Gapwise](https://gapwise.ca) · [API](https://api.gapwise.ca/v1) · [Status](https://status.gapwise.ca) · [GitHub org](https://github.com/Gapwise-for-UTM) · [Source data](data/utm)
 
 </div>
 
@@ -18,7 +18,9 @@
 
 `gapwise-data` is the **canonical repository for public UTM campus facts and geometry used by Gapwise**. The checked-in dataset under [`data/utm`](data/utm) contains building identity, map geometry, entrances, routing graph inputs, indoor/outdoor graph artifacts, provenance, confidence metadata, and generated audit data.
 
-The main [`gapwise`](https://github.com/andrewmuratov/gapwise) repository remains authoritative for **student state and deterministic product behavior**: timetable semantics, route calculation, gap planning, public API orchestration, SDK contracts, and map/product presentation. It vendors a checked-in snapshot of this repository's campus data so production behavior never depends on `data.gapwise.ca` or GitHub being reachable at runtime.
+The canonical Gapwise repositories are owned by the **Gapwise for UTM** GitHub organization (`Gapwise-for-UTM`). Andrew Muratov remains the creator and primary maintainer.
+
+The main [`gapwise`](https://github.com/Gapwise-for-UTM/gapwise) repository remains authoritative for **student state and deterministic product behavior**: timetable semantics, route calculation, gap planning, public API orchestration, SDK contracts, and map/product presentation. It vendors a checked-in snapshot of this repository's campus data so production behavior never depends on `data.gapwise.ca` or GitHub being reachable at runtime.
 
 In short:
 
@@ -71,7 +73,7 @@ The machine-readable integrity manifest is:
 https://data.gapwise.ca/datasets/utm/latest/manifest.json
 ```
 
-Each manifest entry records the artifact path, byte size, SHA-256 digest, and canonical first-party URL. The schema is published at `https://data.gapwise.ca/schemas/dataset-manifest.schema.json`.
+Each manifest entry records the artifact path, byte size, SHA-256 digest, canonical first-party URL, and organization-owned canonical repository. The schema is published at `https://data.gapwise.ca/schemas/dataset-manifest.schema.json`.
 
 This replaces raw GitHub URLs as the preferred public distribution surface without creating a runtime dependency for the student app. `latest` is a current channel; reproducibility-sensitive consumers should pin checksums or a future immutable dataset release.
 
@@ -138,12 +140,12 @@ The six first-party repositories are separate execution/publication surfaces wit
 
 | Repository | Role | Primary surface |
 | --- | --- | --- |
-| **[`gapwise`](https://github.com/andrewmuratov/gapwise)** | Core web/PWA, canonical student state, deterministic routing/gap-planning behavior, public API, OpenAPI contract, and SDK source; consumes a vendored `gapwise-data` snapshot | [gapwise.ca](https://gapwise.ca) / [api.gapwise.ca](https://api.gapwise.ca/v1) |
-| **[`gapwise-mobile`](https://github.com/andrewmuratov/gapwise-mobile)** | Native iOS and Android client consuming Gapwise product/API contracts | Native mobile app |
-| **[`gapwise-ai`](https://github.com/andrewmuratov/gapwise-ai)** | OAuth-protected MCP layer consuming deterministic Gapwise campus/API semantics and delegated student context | [ai.gapwise.ca](https://ai.gapwise.ca) |
-| **[`gapwise-data`](https://github.com/andrewmuratov/gapwise-data)** | **Canonical public UTM campus facts, geometry, routing graph data, provenance, validation, and raw-data distribution** | [data.gapwise.ca](https://data.gapwise.ca) |
-| **[`gapwise-docs`](https://github.com/andrewmuratov/gapwise-docs)** | Canonical public developer documentation for platform contracts, data, SDKs, security, and AI/MCP | [docs.gapwise.ca](https://docs.gapwise.ca) |
-| **[`gapwise-status`](https://github.com/andrewmuratov/gapwise-status)** | Independent service-health monitoring and incident communication | [status.gapwise.ca](https://status.gapwise.ca) |
+| **[`gapwise`](https://github.com/Gapwise-for-UTM/gapwise)** | Core web/PWA, canonical student state, deterministic routing/gap-planning behavior, public API, OpenAPI contract, and SDK source; consumes a vendored `gapwise-data` snapshot | [gapwise.ca](https://gapwise.ca) / [api.gapwise.ca](https://api.gapwise.ca/v1) |
+| **[`gapwise-mobile`](https://github.com/Gapwise-for-UTM/gapwise-mobile)** | Native iOS and Android client consuming Gapwise product/API contracts | Native mobile app |
+| **[`gapwise-ai`](https://github.com/Gapwise-for-UTM/gapwise-ai)** | OAuth-protected MCP layer consuming deterministic Gapwise campus/API semantics and delegated student context | [ai.gapwise.ca](https://ai.gapwise.ca) |
+| **[`gapwise-data`](https://github.com/Gapwise-for-UTM/gapwise-data)** | **Canonical public UTM campus facts, geometry, routing graph data, provenance, validation, and raw-data distribution** | [data.gapwise.ca](https://data.gapwise.ca) |
+| **[`gapwise-docs`](https://github.com/Gapwise-for-UTM/gapwise-docs)** | Canonical public developer documentation for platform contracts, data, SDKs, security, and AI/MCP | [docs.gapwise.ca](https://docs.gapwise.ca) |
+| **[`gapwise-status`](https://github.com/Gapwise-for-UTM/gapwise-status)** | Independent service-health monitoring and incident communication | [status.gapwise.ca](https://status.gapwise.ca) |
 
 No consumer repository should recreate or silently fork UTM campus facts. Product-specific calculations and presentation remain with their product owner; source campus facts belong here.
 
@@ -153,6 +155,7 @@ No consumer repository should recreate or silently fork UTM campus facts. Produc
 
 Choose the interface that matches your use case:
 
+- **GitHub organization:** https://github.com/Gapwise-for-UTM
 - **Developer hub:** https://gapwise.ca/developers
 - **Developer docs:** https://docs.gapwise.ca
 - **Data docs:** https://docs.gapwise.ca/data/
@@ -178,6 +181,8 @@ Gapwise source code is MIT licensed, but upstream datasets retain their own term
 ## Local development
 
 ```bash
+git clone https://github.com/Gapwise-for-UTM/gapwise-data.git
+cd gapwise-data
 npm install
 npm run data:validate
 npm run dev
