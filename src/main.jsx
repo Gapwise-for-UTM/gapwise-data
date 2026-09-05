@@ -21,6 +21,8 @@ const schemas = [
 ];
 
 const DATASET_BASE = 'https://data.gapwise.ca/datasets/utm/latest';
+const GITHUB_ORG = 'https://github.com/Gapwise-for-UTM';
+const DATA_REPOSITORY = `${GITHUB_ORG}/gapwise-data`;
 
 const snippets = {
   js: `const response = await fetch(\n  '${DATASET_BASE}/buildings.geojson'\n);\nconst campus = await response.json();\n\nconst deerfield = campus.features.find(\n  feature => feature.properties.code === 'DH'\n);`,
@@ -55,7 +57,7 @@ function App() {
           <a href="https://docs.gapwise.ca/data/">Docs</a>
           <a href="https://api.gapwise.ca/v1">API</a>
           <a href="https://gapwise.ca/developers">Developers</a>
-          <a href="https://github.com/andrewmuratov/gapwise-data" target="_blank" rel="noreferrer">GitHub <ExternalLink size={13}/></a>
+          <a href={DATA_REPOSITORY} target="_blank" rel="noreferrer">GitHub <ExternalLink size={13}/></a>
         </nav>
       </header>
 
@@ -67,7 +69,7 @@ function App() {
           <div className="hero-actions">
             <a className="primary" href="#datasets">Explore the data <ChevronRight size={16}/></a>
             <a className="secondary" href="https://docs.gapwise.ca/data/"><BookOpen size={15}/> Read the data docs</a>
-            <a className="secondary" href="https://github.com/andrewmuratov/gapwise-data/tree/main/data/utm"><Braces size={15}/> View source</a>
+            <a className="secondary" href={`${DATA_REPOSITORY}/tree/main/data/utm`}><Braces size={15}/> View source</a>
           </div>
           <div className="stats"><div><strong>GeoJSON</strong><span>Spatial data</span></div><div><strong>Auditable</strong><span>Provenance-first</span></div><div><strong>First-party</strong><span>Stable distribution</span></div><div><strong>UTM</strong><span>Current coverage</span></div></div>
         </section>
@@ -92,7 +94,7 @@ function App() {
         <section className="section shell principles"><div><ShieldCheck size={28}/><div className="kicker">Data principles</div><h2>Trust is part of the dataset.</h2></div><div className="principle-list">{[['01','Explain transformations','Document how source material becomes application data.'],['02','Separate fact from inference','Derived navigation geometry should never masquerade as direct observation.'],['03','Prefer stable identifiers','Names change. Durable codes and source IDs make integrations more resilient.'],['04','Preserve provenance','A useful record should carry enough context to understand where it came from.']].map(([n,title,copy]) => <article key={n}><span>{n}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></section>
       </main>
 
-      <footer><div className="shell footer-inner"><a className="brand" href="#top"><img src="/logo-mark.svg" alt=""/><span>Gapwise Data</span></a><p>Independent project · Not an official University of Toronto service.</p><a href="https://gapwise.ca">App <ExternalLink size={12}/></a><a href="https://gapwise.ca/developers">Developers <ExternalLink size={12}/></a><a href="https://docs.gapwise.ca/data/">Docs <ExternalLink size={12}/></a><a href="https://api.gapwise.ca/v1">API <ExternalLink size={12}/></a><a href="https://status.gapwise.ca">Status <ExternalLink size={12}/></a><a href="https://github.com/andrewmuratov/gapwise-data">Repository <ExternalLink size={12}/></a></div></footer>
+      <footer><div className="shell footer-inner"><a className="brand" href="#top"><img src="/logo-mark.svg" alt=""/><span>Gapwise Data</span></a><p>Independent project · Not an official University of Toronto service.</p><a href="https://gapwise.ca">App <ExternalLink size={12}/></a><a href="https://gapwise.ca/developers">Developers <ExternalLink size={12}/></a><a href="https://docs.gapwise.ca/data/">Docs <ExternalLink size={12}/></a><a href="https://api.gapwise.ca/v1">API <ExternalLink size={12}/></a><a href="https://status.gapwise.ca">Status <ExternalLink size={12}/></a><a href={DATA_REPOSITORY}>Repository <ExternalLink size={12}/></a></div></footer>
     </>
   );
 }

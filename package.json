@@ -3,6 +3,14 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "homepage": "https://data.gapwise.ca",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gapwise-for-UTM/gapwise-data.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gapwise-for-UTM/gapwise-data/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "npm run data:validate && npm run distribution:check && vite build && npm run data:publish",

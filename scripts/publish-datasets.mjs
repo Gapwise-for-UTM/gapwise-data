@@ -40,7 +40,7 @@ const manifest = {
   schemaVersion: 1,
   dataset: 'utm-campus',
   channel: 'latest',
-  canonicalRepository: 'https://github.com/andrewmuratov/gapwise-data',
+  canonicalRepository: 'https://github.com/Gapwise-for-UTM/gapwise-data',
   documentation: 'https://docs.gapwise.ca/data/',
   api: 'https://api.gapwise.ca/v1',
   generatedAt: new Date().toISOString(),
@@ -54,6 +54,7 @@ await writeFile(resolve(root, 'dist/.well-known/gapwise-data.json'), `${JSON.str
   manifest: 'https://data.gapwise.ca/datasets/utm/latest/manifest.json',
   docs: manifest.documentation,
   api: manifest.api,
+  repository: manifest.canonicalRepository,
 }, null, 2)}\n`, 'utf8');
 
 console.log(`Published ${artifacts.length} canonical campus artifacts to dist/datasets/utm/latest.`);
