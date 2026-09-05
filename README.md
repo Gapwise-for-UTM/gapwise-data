@@ -8,7 +8,7 @@
 
 **A transparent, developer-friendly home for the UTM campus data that powers Gapwise: buildings, geometry, routing evidence, provenance, validation, attribution, and reuse.**
 
-[Website](https://data.gapwise.ca) · [Gapwise](https://gapwise.ca) · [Docs](https://docs.gapwise.ca) · [Status](https://status.gapwise.ca) · [AI](https://ai.gapwise.ca) · [Source data](data/utm)
+[Website](https://data.gapwise.ca) · [Data docs](https://docs.gapwise.ca/data/) · [Gapwise](https://gapwise.ca) · [API](https://api.gapwise.ca/v1) · [Status](https://status.gapwise.ca) · [Source data](data/utm)
 
 </div>
 
@@ -57,21 +57,56 @@ The current public Gapwise campus snapshot contains **30 canonical UTM buildings
 
 ---
 
+## First-party distribution
+
+Production builds publish the complete validated `data/utm` tree from a first-party Gapwise domain:
+
+```text
+https://data.gapwise.ca/datasets/utm/latest/
+```
+
+The machine-readable integrity manifest is:
+
+```text
+https://data.gapwise.ca/datasets/utm/latest/manifest.json
+```
+
+Each manifest entry records the artifact path, byte size, SHA-256 digest, and canonical first-party URL. The schema is published at `https://data.gapwise.ca/schemas/dataset-manifest.schema.json`.
+
+This replaces raw GitHub URLs as the preferred public distribution surface without creating a runtime dependency for the student app. `latest` is a current channel; reproducibility-sensitive consumers should pin checksums or a future immutable dataset release.
+
+See the public [Data documentation](https://docs.gapwise.ca/data/) for API-vs-raw-data guidance, provenance, uncertainty, versioning, and contribution rules.
+
+---
+
 ## Consumer model
 
 The core application intentionally keeps a compatibility mirror at `gapwise/src/data/utm` because the web app, public API, routing engine, tests, and build tooling already import those paths. That mirror is **not an independent source of truth**.
 
-The core repository provides three maintenance commands:
+The core repository provides three synchronization commands:
 
 ```bash
-bun run campus-data:check    # fail if the core mirror differs from this repo
-bun run campus-data:sync     # copy canonical data -> core mirror
-bun run campus-data:publish  # explicit tooling path for generated core artifacts -> canonical repo
+bun run campus-data:check
+bun run campus-data:sync
+bun run campus-data:publish
 ```
 
-Data-writing routing/survey maintenance commands synchronize from this repository before running and explicitly publish the generated dataset back afterward. CI independently compares the core mirror against this canonical tree.
+Data-writing routing/survey maintenance commands still synchronize from this repository before running and publish their resulting canonical artifacts back afterward. That generator layer remains a **transitional dependency** while validation/routing types are decoupled from core. New campus facts and source-level maintenance documentation belong here, not in downstream consumers.
 
 Normal production requests do not perform cross-repository or `data.gapwise.ca` fetches.
+
+---
+
+## Maintenance documentation
+
+Source-adjacent maintenance notes live under [`docs/maintenance`](docs/maintenance):
+
+- source/provider boundaries;
+- canonical geometry and identity rules;
+- field-survey rules;
+- access-audit ownership.
+
+Public developer-facing explanations belong at **https://docs.gapwise.ca/data/**. The Data repository intentionally does not become a second public documentation site.
 
 ---
 
@@ -91,7 +126,9 @@ It verifies, among other things:
 - the 30-building public snapshot and unique building codes;
 - SHA-256 integrity for every checked-in canonical campus file.
 
-`npm run build` runs this validation before building the portal.
+`npm run build` validates the dataset, verifies the public distribution contract, builds the portal, and publishes the raw distribution tree into the deployment output.
+
+The independent core-consumer contract also injects candidate Data into current core and checks that the deterministic consumer still compiles/routes against it.
 
 ---
 
@@ -104,8 +141,8 @@ The six first-party repositories are separate execution/publication surfaces wit
 | **[`gapwise`](https://github.com/andrewmuratov/gapwise)** | Core web/PWA, canonical student state, deterministic routing/gap-planning behavior, public API, OpenAPI contract, and SDK source; consumes a vendored `gapwise-data` snapshot | [gapwise.ca](https://gapwise.ca) / [api.gapwise.ca](https://api.gapwise.ca/v1) |
 | **[`gapwise-mobile`](https://github.com/andrewmuratov/gapwise-mobile)** | Native iOS and Android client consuming Gapwise product/API contracts | Native mobile app |
 | **[`gapwise-ai`](https://github.com/andrewmuratov/gapwise-ai)** | OAuth-protected MCP layer consuming deterministic Gapwise campus/API semantics and delegated student context | [ai.gapwise.ca](https://ai.gapwise.ca) |
-| **[`gapwise-data`](https://github.com/andrewmuratov/gapwise-data)** | **Canonical public UTM campus facts, geometry, routing graph data, provenance, validation, and reuse portal** | [data.gapwise.ca](https://data.gapwise.ca) |
-| **[`gapwise-docs`](https://github.com/andrewmuratov/gapwise-docs)** | Canonical public developer documentation for platform contracts | [docs.gapwise.ca](https://docs.gapwise.ca) |
+| **[`gapwise-data`](https://github.com/andrewmuratov/gapwise-data)** | **Canonical public UTM campus facts, geometry, routing graph data, provenance, validation, and raw-data distribution** | [data.gapwise.ca](https://data.gapwise.ca) |
+| **[`gapwise-docs`](https://github.com/andrewmuratov/gapwise-docs)** | Canonical public developer documentation for platform contracts, data, SDKs, security, and AI/MCP | [docs.gapwise.ca](https://docs.gapwise.ca) |
 | **[`gapwise-status`](https://github.com/andrewmuratov/gapwise-status)** | Independent service-health monitoring and incident communication | [status.gapwise.ca](https://status.gapwise.ca) |
 
 No consumer repository should recreate or silently fork UTM campus facts. Product-specific calculations and presentation remain with their product owner; source campus facts belong here.
@@ -114,13 +151,16 @@ No consumer repository should recreate or silently fork UTM campus facts. Produc
 
 ## For developers
 
-Use the public Gapwise developer platform when you want a stable machine-readable **campus intelligence contract** instead of depending directly on repository internals:
+Choose the interface that matches your use case:
 
 - **Developer hub:** https://gapwise.ca/developers
 - **Developer docs:** https://docs.gapwise.ca
+- **Data docs:** https://docs.gapwise.ca/data/
+- **Raw Data portal:** https://data.gapwise.ca
+- **Raw dataset manifest:** https://data.gapwise.ca/datasets/utm/latest/manifest.json
 - **API:** https://api.gapwise.ca/v1
 - **OpenAPI 3.1:** https://api.gapwise.ca/openapi.json
-- **Versioned UTM snapshot:** [`public/data/utm-campus-v1.json`](public/data/utm-campus-v1.json)
+- **Versioned compact snapshot:** [`public/data/utm-campus-v1.json`](public/data/utm-campus-v1.json)
 - **JavaScript/TypeScript SDK:** `@gapwise/sdk@0.1.1` on npm and JSR
 - **Python SDK:** `gapwise==0.1.0` on PyPI
 
@@ -129,7 +169,7 @@ npm install @gapwise/sdk@0.1.1
 python -m pip install gapwise==0.1.0
 ```
 
-The repository-level dataset is appropriate for inspection, provenance work, validation, and contributing campus facts. Applications should generally prefer the API/SDK contract unless they specifically need the raw source dataset.
+Applications should generally prefer the API/SDK when they want stable Gapwise semantics. Use raw distribution for research, visualization, provenance inspection, validation, or custom derivation pipelines.
 
 Gapwise source code is MIT licensed, but upstream datasets retain their own terms. OpenStreetMap-derived records require the appropriate OpenStreetMap attribution and ODbL compliance; the MIT license does not override upstream data obligations.
 
@@ -150,7 +190,7 @@ npm run build
 npm run preview
 ```
 
-The portal is a lightweight React + Vite application designed for Vercel. Dataset validation is deliberately independent of the portal UI.
+The portal is a lightweight React + Vite application designed for Vercel. Dataset validation and distribution are deliberately independent of the portal UI.
 
 ---
 

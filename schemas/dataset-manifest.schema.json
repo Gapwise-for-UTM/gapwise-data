@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.gapwise.ca/schemas/dataset-manifest.schema.json",
+  "title": "Gapwise Data dataset manifest",
+  "type": "object",
+  "required": ["schemaVersion", "dataset", "channel", "canonicalRepository", "artifacts"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "dataset": { "type": "string" },
+    "channel": { "type": "string" },
+    "canonicalRepository": { "type": "string", "format": "uri" },
+    "documentation": { "type": "string", "format": "uri" },
+    "api": { "type": "string", "format": "uri" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256", "url"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "bytes": { "type": "integer", "minimum": 0 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "url": { "type": "string", "format": "uri" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
