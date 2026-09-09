@@ -21,8 +21,8 @@ const schemas = [
 ];
 
 const DATASET_BASE = 'https://data.gapwise.ca/datasets/utm/latest';
-const GITHUB_ORG = 'https://github.com/Gapwise-for-UTM';
-const DATA_REPOSITORY = `${GITHUB_ORG}/gapwise-data`;
+const DATA_REPOSITORY = 'https://gapwise.ca/github/data';
+const DATA_SOURCE_TREE = 'https://github.com/Gapwise-for-UTM/gapwise-data/tree/main/data/utm';
 
 const snippets = {
   js: `const response = await fetch(\n  '${DATASET_BASE}/buildings.geojson'\n);\nconst campus = await response.json();\n\nconst deerfield = campus.features.find(\n  feature => feature.properties.code === 'DH'\n);`,
@@ -69,7 +69,7 @@ function App() {
           <div className="hero-actions">
             <a className="primary" href="#datasets">Explore the data <ChevronRight size={16}/></a>
             <a className="secondary" href="https://docs.gapwise.ca/data/"><BookOpen size={15}/> Read the data docs</a>
-            <a className="secondary" href={`${DATA_REPOSITORY}/tree/main/data/utm`}><Braces size={15}/> View source</a>
+            <a className="secondary" href={DATA_SOURCE_TREE}><Braces size={15}/> View source</a>
           </div>
           <div className="stats"><div><strong>GeoJSON</strong><span>Spatial data</span></div><div><strong>Auditable</strong><span>Provenance-first</span></div><div><strong>First-party</strong><span>Stable distribution</span></div><div><strong>UTM</strong><span>Current coverage</span></div></div>
         </section>
