@@ -21,8 +21,8 @@ const schemas = [
 ];
 
 const DATASET_BASE = 'https://data.gapwise.ca/datasets/utm/latest';
-const GITHUB_ORG = 'https://github.com/Gapwise-for-UTM';
-const DATA_REPOSITORY = `${GITHUB_ORG}/gapwise-data`;
+const DATA_REPOSITORY = 'https://gapwise.ca/github/data';
+const DATA_SOURCE_REPOSITORY = 'https://github.com/Gapwise-for-UTM/gapwise-data';
 
 const snippets = {
   js: `const response = await fetch(\n  '${DATASET_BASE}/buildings.geojson'\n);\nconst campus = await response.json();\n\nconst deerfield = campus.features.find(\n  feature => feature.properties.code === 'DH'\n);`,
@@ -69,7 +69,7 @@ function App() {
           <div className="hero-actions">
             <a className="primary" href="#datasets">Explore the data <ChevronRight size={16}/></a>
             <a className="secondary" href="https://docs.gapwise.ca/data/"><BookOpen size={15}/> Read the data docs</a>
-            <a className="secondary" href={`${DATA_REPOSITORY}/tree/main/data/utm`}><Braces size={15}/> View source</a>
+            <a className="secondary" href={`${DATA_SOURCE_REPOSITORY}/tree/main/data/utm`}><Braces size={15}/> View source</a>
           </div>
           <div className="stats"><div><strong>GeoJSON</strong><span>Spatial data</span></div><div><strong>Auditable</strong><span>Provenance-first</span></div><div><strong>First-party</strong><span>Stable distribution</span></div><div><strong>UTM</strong><span>Current coverage</span></div></div>
         </section>
@@ -91,7 +91,7 @@ function App() {
 
         <section id="reuse" className="section shell"><div className="kicker"><Map size={14}/> Use the data</div><h2>Use a first-party Gapwise URL.</h2><p className="section-copy">Raw source-level artifacts are distributed from <code>data.gapwise.ca</code>. Applications that need stable campus-intelligence behavior should prefer the Gapwise public API or SDKs. Production Gapwise itself uses a tested pinned snapshot and does not depend on this website being online.</p><div className="codebox"><div className="codebar"><div>{['js','python','curl'].map(tab => <button key={tab} className={codeTab===tab?'active':''} onClick={() => setCodeTab(tab)}>{tab === 'js' ? 'JavaScript' : tab === 'python' ? 'Python' : 'curl'}</button>)}</div><button className="copy" onClick={copySnippet}>{copied ? <Check size={14}/> : <Clipboard size={14}/>} {copied ? 'Copied' : 'Copy'}</button></div><pre><code>{snippets[codeTab]}</code></pre></div><div className="hero-actions"><a className="secondary" href="/datasets/utm/latest/manifest.json"><FileJson size={15}/> Dataset manifest</a><a className="secondary" href="https://api.gapwise.ca/v1"><Braces size={15}/> Stable API</a><a className="secondary" href="https://docs.gapwise.ca/data/"><BookOpen size={15}/> Reuse guide</a></div></section>
 
-        <section className="section shell principles"><div><ShieldCheck size={28}/><div className="kicker">Data principles</div><h2>Trust is part of the dataset.</h2></div><div className="principle-list">{[['01','Explain transformations','Document how source material becomes application data.'],['02','Separate fact from inference','Derived navigation geometry should never masquerade as direct observation.'],['03','Prefer stable identifiers','Names change. Durable codes and source IDs make integrations more resilient.'],['04','Preserve provenance','A useful record should carry enough context to understand where it came from.']].map(([n,title,copy]) => <article key={n}><span>{n}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></section>
+        <section className="section shell principles"><div><ShieldCheck size={28}/><div className="kicker">Data principles</div><h2>Trust is part of the dataset.</h2></div><div className="principle-list">{[['01','Explain transformations','Document how source material becomes application data.'],['02','Separate fact from inference','Derived navigation geometry should never masquerade as direct observation.'],['03','Prefer stable identifiers','Names change. Durable codes and source IDs make integrations more resilient.'],['04','Preserve provenance','A useful record should carry enough context to understand where it came from.']].map(([n,title,copy]) => <article key={n}><span>{n}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</section>
       </main>
 
       <footer><div className="shell footer-inner"><a className="brand" href="#top"><img src="/logo-mark.svg" alt=""/><span>Gapwise Data</span></a><p>Independent project · Not an official University of Toronto service.</p><a href="https://gapwise.ca">App <ExternalLink size={12}/></a><a href="https://gapwise.ca/developers">Developers <ExternalLink size={12}/></a><a href="https://docs.gapwise.ca/data/">Docs <ExternalLink size={12}/></a><a href="https://api.gapwise.ca/v1">API <ExternalLink size={12}/></a><a href="https://status.gapwise.ca">Status <ExternalLink size={12}/></a><a href={DATA_REPOSITORY}>Repository <ExternalLink size={12}/></a></div></footer>
