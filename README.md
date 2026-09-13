@@ -16,7 +16,7 @@
 
 ## What Gapwise Data is
 
-`gapwise-data` is the **canonical repository for public UTM campus facts and geometry used by Gapwise**. The checked-in dataset under [`data/utm`](data/utm) contains building identity, map geometry, entrances, routing graph inputs, indoor/outdoor graph artifacts, provenance, confidence metadata, and generated audit data.
+`data` is the **canonical repository for public UTM campus facts and geometry used by Gapwise**. The checked-in dataset under [`data/utm`](data/utm) contains building identity, map geometry, entrances, routing graph inputs, indoor/outdoor graph artifacts, provenance, confidence metadata, and generated audit data.
 
 The canonical Gapwise repositories are owned by the **Gapwise for UTM** GitHub organization (`Gapwise-for-UTM`). Andrew Muratov remains the creator and primary maintainer.
 
@@ -24,7 +24,7 @@ The main [`gapwise`](https://github.com/Gapwise-for-UTM/gapwise) repository rema
 
 In short:
 
-> **`gapwise-data` knows what UTM is. `gapwise` knows what to do with that knowledge.**
+> **`data` knows what UTM is. `gapwise` knows what to do with that knowledge.**
 
 The initial canonical tree was bootstrapped byte-for-byte from the former `gapwise/src/data/utm` source. [`data/utm-source.json`](data/utm-source.json) records that migration provenance. [`data/utm/SHA256SUMS`](data/utm/SHA256SUMS) makes the current canonical tree independently integrity-checkable.
 
@@ -45,7 +45,7 @@ The initial canonical tree was bootstrapped byte-for-byte from the former `gapwi
 - attribution and reuse requirements;
 - versioned privacy-safe public data.
 
-The current public Gapwise campus snapshot contains **30 canonical UTM buildings/facilities** and is consumed through the same deterministic platform semantics used by Gapwise web, mobile, API, SDK, and AI-facing surfaces.
+The current public Gapwise campus snapshot contains **30 canonical UTM buildings/facilities** and is consumed through the same deterministic platform semantics used by Gapwise web, Android, API, SDK, and AI-facing surfaces.
 
 ## Data principles
 
@@ -140,12 +140,12 @@ The six first-party repositories are separate execution/publication surfaces wit
 
 | Repository | Role | Primary surface |
 | --- | --- | --- |
-| **[`gapwise`](https://github.com/Gapwise-for-UTM/gapwise)** | Core web/PWA, canonical student state, deterministic routing/gap-planning behavior, public API, OpenAPI contract, and SDK source; consumes a vendored `gapwise-data` snapshot | [gapwise.ca](https://gapwise.ca) / [api.gapwise.ca](https://api.gapwise.ca/v1) |
-| **[`gapwise-mobile`](https://github.com/Gapwise-for-UTM/gapwise-mobile)** | Native iOS and Android client consuming Gapwise product/API contracts | Native mobile app |
-| **[`gapwise-ai`](https://github.com/Gapwise-for-UTM/gapwise-ai)** | OAuth-protected MCP layer consuming deterministic Gapwise campus/API semantics and delegated student context | [ai.gapwise.ca](https://ai.gapwise.ca) |
-| **[`gapwise-data`](https://github.com/Gapwise-for-UTM/gapwise-data)** | **Canonical public UTM campus facts, geometry, routing graph data, provenance, validation, and raw-data distribution** | [data.gapwise.ca](https://data.gapwise.ca) |
-| **[`gapwise-docs`](https://github.com/Gapwise-for-UTM/gapwise-docs)** | Canonical public developer documentation for platform contracts, data, SDKs, security, and AI/MCP | [docs.gapwise.ca](https://docs.gapwise.ca) |
-| **[`gapwise-status`](https://github.com/Gapwise-for-UTM/gapwise-status)** | Independent service-health monitoring and incident communication | [status.gapwise.ca](https://status.gapwise.ca) |
+| **[`gapwise`](https://github.com/Gapwise-for-UTM/gapwise)** | Core web/PWA, canonical student state, deterministic routing/gap-planning behavior, public API, OpenAPI contract, and SDK source; consumes a vendored `data` snapshot | [gapwise.ca](https://gapwise.ca) / [api.gapwise.ca](https://api.gapwise.ca/v1) |
+| **[`android`](https://github.com/Gapwise-for-UTM/android)** | Native Kotlin + Jetpack Compose Android client consuming Gapwise product/API contracts | Android app |
+| **[`ai`](https://github.com/Gapwise-for-UTM/ai)** | OAuth-protected MCP layer consuming deterministic Gapwise campus/API semantics and delegated student context | [ai.gapwise.ca](https://ai.gapwise.ca) |
+| **[`data`](https://github.com/Gapwise-for-UTM/data)** | **Canonical public UTM campus facts, geometry, routing graph data, provenance, validation, and raw-data distribution** | [data.gapwise.ca](https://data.gapwise.ca) |
+| **[`docs`](https://github.com/Gapwise-for-UTM/docs)** | Canonical public developer documentation for platform contracts, data, SDKs, security, and AI/MCP | [docs.gapwise.ca](https://docs.gapwise.ca) |
+| **[`status`](https://github.com/Gapwise-for-UTM/status)** | Independent service-health monitoring and incident communication | [status.gapwise.ca](https://status.gapwise.ca) |
 
 No consumer repository should recreate or silently fork UTM campus facts. Product-specific calculations and presentation remain with their product owner; source campus facts belong here.
 
@@ -181,8 +181,8 @@ Gapwise source code is MIT licensed, but upstream datasets retain their own term
 ## Local development
 
 ```bash
-git clone https://github.com/Gapwise-for-UTM/gapwise-data.git
-cd gapwise-data
+git clone https://github.com/Gapwise-for-UTM/data.git
+cd data
 npm install
 npm run data:validate
 npm run dev
