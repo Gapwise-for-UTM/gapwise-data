@@ -40,7 +40,7 @@ const manifest = {
   schemaVersion: 1,
   dataset: 'utm-campus',
   channel: 'latest',
-  canonicalRepository: 'https://github.com/Gapwise-for-UTM/gapwise-data',
+  canonicalRepository: 'https://github.com/Gapwise-for-UTM/data',
   documentation: 'https://docs.gapwise.ca/data/',
   api: 'https://api.gapwise.ca/v1',
   generatedAt: new Date().toISOString(),
