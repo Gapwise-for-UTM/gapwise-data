@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "canonicalRepository": "andrewmuratov/gapwise-data",
+  "canonicalRepository": "Gapwise-for-UTM/data",
   "canonicalPath": "data/utm",
   "bootstrappedFrom": {
     "repository": "andrewmuratov/gapwise",
