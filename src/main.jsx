@@ -22,7 +22,7 @@ const schemas = [
 
 const DATASET_BASE = 'https://data.gapwise.ca/datasets/utm/latest';
 const GITHUB_ORG = 'https://github.com/Gapwise-for-UTM';
-const DATA_REPOSITORY = `${GITHUB_ORG}/gapwise-data`;
+const DATA_REPOSITORY = `${GITHUB_ORG}/data`;
 
 const snippets = {
   js: `const response = await fetch(\n  '${DATASET_BASE}/buildings.geojson'\n);\nconst campus = await response.json();\n\nconst deerfield = campus.features.find(\n  feature => feature.properties.code === 'DH'\n);`,
